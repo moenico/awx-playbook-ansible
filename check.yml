@@ -1,0 +1,85 @@
+- hosts: prod-servers
+  gather_facts: false
+  remote_user: root
+  tasks:
+  - name: "Current user"
+    shell: whoami
+    register: who
+  - debug: msg={{ who.stdout }}
+
+  - name: "enable nginx"
+    shell: systemctl enable nginx.service
+    ignore_errors: yes
+    register: nginx_enable
+  - debug: var=nginx_enable.stdout_lines
+
+  - name: "enable docker"
+    shell: systemctl enable docker
+    ignore_errors: yes
+    register: docker_enable
+  - debug: var=docker_enable.stdout_lines
+
+  - name: "check OS version"
+    shell: cat /etc/redhat-release;lsb_release -a
+    register: version
+  - debug: msg={{ version.stdout }}
+
+  - name: "check /boot folder space usage"
+    shell: df -h|grep /boot;du -sh /boot/*
+    register: boot
+  - debug: var=boot.stdout_lines
+
+  - name: "check docker service"
+    shell: ps -ef |grep docker
+    register: docker
+  - debug: var=docker.stdout_lines
+
+  - name: "check nginx service"
+    shell: ps -ef |grep nginx
+    register: nginx
+  - debug: var=nginx.stdout_lines
+
+  - name: "check docker service2"
+    shell: systemctl status docker
+    register: docker2
+    ignore_errors: yes
+  - debug: var=docker2.stdout_lines
+
+  - name: "check docker overlay"
+    shell: docker info|grep over
+    register: overlay
+    ignore_errors: yes
+  - debug: var=overlay.stdout_lines
+
+  - name: "check docker service3"
+    shell: docker ps
+    register: docker3
+    ignore_errors: yes
+  - debug: var=docker3.stdout_lines
+
+  - name: "check docker service count"
+    shell: docker ps|wc -l
+    register: docker_count
+    ignore_errors: yes
+  - debug: var=docker_count.stdout_lines
+
+  - name: "check zabbix service"
+    shell: ps -ef |grep zabbix
+    register: zabbix
+  - debug: var=zabbix.stdout_lines
+
+  - name: "check mount"
+    shell: df -h|grep -v /var/lib/docker/
+    register: mount
+  - debug: var=mount.stdout_lines
+
+  - name: "check mount count"
+    shell: df -h|grep -v /var/lib/docker/|wc -l
+    register: mount_count
+  - debug: var=mount_count.stdout_lines
+
+  - name: "check falcon-sensor"
+    shell: systemctl status falcon-sensor
+    register: falcon
+    ignore_errors: yes
+  - debug: var=falcon.stdout_lines
