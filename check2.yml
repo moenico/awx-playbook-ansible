@@ -1,0 +1,17 @@
+---
+- name: Example Playbook
+  hosts: all
+  gather_facts: false
+  remote_user: root
+  tasks:
+    - name: "Current user"
+      shell: whoami
+      register: who
+    - debug:
+        msg: "{{ who.stdout }}"
+
+    - name: "Check OS version"
+      shell: cat /etc/redhat-release || lsb_release -a
+      register: version
+    - debug:
+        msg: "{{ version.stdout }}"
