@@ -15,3 +15,10 @@
       register: version
     - debug:
         msg: "{{ version.stdout }}"
+
+    - name: "Current user as root"
+      become: yes  # 使用提权
+      shell: whoami
+      register: who_root
+    - debug:
+        msg: "As root: {{ who_root.stdout }}"
