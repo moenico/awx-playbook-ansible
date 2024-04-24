@@ -2,7 +2,7 @@
 - name: Example Playbook
   hosts: all
   gather_facts: false
-  remote_user: root
+  remote_user: hpGA41rnYpLnVy
   tasks:
     - name: "Current user"
       shell: whoami
